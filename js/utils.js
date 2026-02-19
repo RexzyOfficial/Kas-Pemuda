@@ -183,11 +183,11 @@ export function showConfirm(title, message) {
 }
 
 /**
- * Get current user from session
+ * Get current user from storage (persisten lintas sesi)
  * @returns {Object|null} User object or null
  */
 export function getCurrentUser() {
-    const userStr = sessionStorage.getItem('user');
+    const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
 }
 
@@ -205,15 +205,14 @@ export function isPengurus() {
  */
 export async function logout() {
     try {
-        // Clear session
-        sessionStorage.removeItem('user');
+        // Hapus data user dari localStorage
+        localStorage.removeItem('user');
 
-        // Sign out from Firebase
+        // Sign out dari Firebase
         const { auth } = await import('./firebase-config.js');
         const { signOut } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
         await signOut(auth);
 
-        // Redirect to login
         window.location.href = 'index.html';
     } catch (error) {
         console.error('Logout error:', error);
