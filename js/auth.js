@@ -7,13 +7,17 @@ import {
 import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 import { showToast, setButtonLoading } from './utils.js';
 
-// ─── Session Helper (localStorage) ───────────────────────────
+// ─── Session Helper (localStorage & sessionStorage) ───────────────────────────
 function saveUser(data) {
+    // Save to localStorage (primary)
     localStorage.setItem('user', JSON.stringify(data));
+    // Also save to sessionStorage (backup)
+    sessionStorage.setItem('user', JSON.stringify(data));
 }
 
 function clearUser() {
     localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
 }
 
 // Login function
