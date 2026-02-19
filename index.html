@@ -76,6 +76,12 @@
             </form>
 
             <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
+
+            <div class="login-footer">
+                <p>Demo akun:</p>
+                <p>pengurus@demo.com / 123456</p>
+                <p>anggota@demo.com / 123456</p>
+            </div>
         </div>
     </div>
 
@@ -90,10 +96,36 @@
     <!-- Firebase & Auth Scripts -->
     <script type="module">
         import { initLoginForm, initPasswordToggle } from './js/auth.js';
-        import { getCurrentUser } from './js/utils.js';
+
+        // Check if already logged in - prioritize localStorage, fallback to sessionStorage
+        function getStoredUser() {
+            // Check localStorage first (primary storage)
+            const localUser = localStorage.getItem('user');
+            if (localUser) {
+                try {
+                    const parsed = JSON.parse(localUser);
+                    if (parsed && parsed.uid) return parsed;
+                } catch (e) {
+                    console.error('Error parsing localStorage user:', e);
+                }
+            }
+            
+            // Fallback to sessionStorage (backup storage)
+            const sessionUser = sessionStorage.getItem('user');
+            if (sessionUser) {
+                try {
+                    const parsed = JSON.parse(sessionUser);
+                    if (parsed && parsed.uid) return parsed;
+                } catch (e) {
+                    console.error('Error parsing sessionStorage user:', e);
+                }
+            }
+            
+            return null;
+        }
 
         // Check if already logged in (safely)
-        const user = getCurrentUser();
+        const user = getStoredUser();
         if (user && user.uid) {
             window.location.href = 'dashboard.html';
         } else {
