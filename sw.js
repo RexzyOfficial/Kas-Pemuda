@@ -1,15 +1,19 @@
-const CACHE_NAME = 'kas-pemuda-v2';
+// ─── Update versi cache setiap ada perubahan file ───────────────
+const CACHE_NAME = 'kas-pemuda-v3';
 const ASSETS = [
     '/',
     '/index.html',
     '/dashboard.html',
     '/history.html',
+    '/manifest.json',
     '/css/style.css',
     '/css/responsive.css',
     '/js/auth.js',
     '/js/utils.js',
     '/js/dashboard.js',
     '/js/history.js',
+    '/js/firebase-config.js',
+    '/js/transactions.js',
     '/assets/images/apple-touch-icon.png',
     '/assets/images/favicon-32x32.png',
     '/assets/images/favicon-16x16.png',
@@ -19,33 +23,31 @@ const ASSETS = [
     '/assets/images/logo.webp'
 ];
 
-// Install Service Worker
+// Install — cache semua aset
 self.addEventListener('install', (e) => {
-    // Force the waiting service worker to become the active service worker.
-    self.skipWaiting();
+    self.skipWaiting(); // langsung aktif tanpa nunggu tab lama tutup
     e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS);
-        })
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
     );
 });
 
-// Activate Service Worker
+// Activate — hapus cache lama, ambil kendali semua tab
 self.addEventListener('activate', (e) => {
     e.waitUntil(
-        caches.keys().then((keys) => {
-            return Promise.all(
-                keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-            );
-        })
+        caches.keys().then((keys) =>
+            Promise.all(
+                keys
+                    .filter((key) => key !== CACHE_NAME)
+                    .map((key) => caches.delete(key))
+            )
+        )
     );
-    // Control all open clients
     self.clients.claim();
 });
 
-// Fetch Assets - Network First Strategy
+// Fetch — Network First: utamakan network, fallback ke cache
 self.addEventListener('fetch', (e) => {
-    // Skip for non-GET requests or external resources
+    // Lewati request non-GET dan resource eksternal (Firebase, CDN, dll)
     if (e.request.method !== 'GET' || !e.request.url.startsWith(self.location.origin)) {
         return;
     }
@@ -53,7 +55,7 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
         fetch(e.request)
             .then((response) => {
-                // Clone the response and save to cache
+                // Simpan response terbaru ke cache
                 const responseClone = response.clone();
                 caches.open(CACHE_NAME).then((cache) => {
                     cache.put(e.request, responseClone);
@@ -61,7 +63,7 @@ self.addEventListener('fetch', (e) => {
                 return response;
             })
             .catch(() => {
-                // If network fails, serve from cache
+                // Kalau offline, sajikan dari cache
                 return caches.match(e.request);
             })
     );
