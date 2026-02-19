@@ -7,26 +7,33 @@ import {
 import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 import { showToast, setButtonLoading } from './utils.js';
 
+// ─── Session Helper (localStorage) ───────────────────────────
+function saveUser(data) {
+    localStorage.setItem('user', JSON.stringify(data));
+}
+
+function clearUser() {
+    localStorage.removeItem('user');
+}
+
 // Login function
 export async function login(email, password) {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Get user data from Firestore
         const userDoc = await getDoc(doc(db, 'users', user.uid));
 
         if (userDoc.exists()) {
             const userData = userDoc.data();
-
-            // Store user data in session
-            sessionStorage.setItem('user', JSON.stringify({
+            const sessionData = {
                 uid: user.uid,
                 email: user.email,
                 role: userData.role,
                 namaLengkap: userData.namaLengkap
-            }));
-
+            };
+            // Simpan ke localStorage agar persisten
+            saveUser(sessionData);
             return { success: true, user: userData };
         } else {
             throw new Error('User data not found');
@@ -46,7 +53,7 @@ export async function login(email, password) {
 export async function logout() {
     try {
         await signOut(auth);
-        sessionStorage.removeItem('user');
+        clearUser();
         window.location.href = 'index.html';
         return { success: true };
     } catch (error) {
@@ -55,27 +62,29 @@ export async function logout() {
     }
 }
 
-// Check auth state
+// Check auth state — restore user from localStorage jika sudah pernah login
 export function checkAuthState() {
     return new Promise((resolve) => {
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Get user data from session or Firestore
-                const sessionUser = sessionStorage.getItem('user');
-                if (sessionUser) {
-                    resolve(JSON.parse(sessionUser));
+                // Cek localStorage dulu (cepat, offline-friendly)
+                const stored = localStorage.getItem('user');
+                if (stored) {
+                    resolve(JSON.parse(stored));
                 } else {
+                    // Fallback: ambil dari Firestore (saat pertama login di device baru)
                     try {
                         const userDoc = await getDoc(doc(db, 'users', user.uid));
                         if (userDoc.exists()) {
                             const userData = userDoc.data();
-                            sessionStorage.setItem('user', JSON.stringify({
+                            const sessionData = {
                                 uid: user.uid,
                                 email: user.email,
                                 role: userData.role,
                                 namaLengkap: userData.namaLengkap
-                            }));
-                            resolve({ uid: user.uid, ...userData });
+                            };
+                            saveUser(sessionData);
+                            resolve(sessionData);
                         } else {
                             resolve(null);
                         }
@@ -85,15 +94,17 @@ export function checkAuthState() {
                     }
                 }
             } else {
+                // User tidak login — hapus localStorage jika ada
+                clearUser();
                 resolve(null);
             }
         });
     });
 }
 
-// Get current user from session
+// Get current user from localStorage
 export function getCurrentUser() {
-    const userStr = sessionStorage.getItem('user');
+    const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
 }
 
@@ -132,6 +143,17 @@ export function initLoginForm() {
     const loginForm = document.getElementById('loginForm');
     if (!loginForm) return;
 
+    // Auto-redirect jika sudah login
+    const stored = localStorage.getItem('user');
+    if (stored) {
+        // Verifikasi dengan Firebase Auth
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    }
+
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -147,7 +169,6 @@ export function initLoginForm() {
         const loadingOverlay = document.getElementById('loadingOverlay');
 
         if (result.success) {
-            // ... success handling ...
             if (window.gsap) {
                 gsap.to(loginBtn, {
                     scale: 0.95,
@@ -167,7 +188,6 @@ export function initLoginForm() {
             setButtonLoading(loginBtn, false);
             if (loadingOverlay) loadingOverlay.style.display = 'none';
 
-            // Shake animation
             if (window.gsap) {
                 gsap.to('.login-card', {
                     x: 10,
