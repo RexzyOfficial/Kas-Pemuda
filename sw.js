@@ -1,5 +1,5 @@
 // ─── Update versi cache setiap ada perubahan file ───────────────
-const CACHE_NAME = 'kas-pemuda-v3';
+const CACHE_NAME = 'kas-pemuda-v4';
 const ASSETS = [
     '/',
     '/index.html',
