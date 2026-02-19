@@ -1,4 +1,5 @@
-import { db } from './firebase-config.js';
+import { db, auth } from './firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import {
     formatRupiah,
     formatDate,
@@ -30,28 +31,39 @@ let transactions = [];
 let monthlyReports = [];
 let monthlyChart = null;
 
-// Initialize history page
-document.addEventListener('DOMContentLoaded', async () => {
-    // Check authentication
-    currentUser = getCurrentUser();
-    if (!currentUser) {
+// Tunggu Firebase restore session dulu sebelum redirect
+onAuthStateChanged(auth, async (firebaseUser) => {
+    if (!firebaseUser) {
         window.location.href = 'index.html';
         return;
     }
 
-    // Display user info
+    // Ambil dari localStorage dulu (cepat)
+    currentUser = getCurrentUser();
+
+    // Kalau kosong (baru install/clear), restore dari Firestore
+    if (!currentUser) {
+        try {
+            const { doc: fsDoc, getDoc: fsGetDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+            const snap = await fsGetDoc(fsDoc(db, 'users', firebaseUser.uid));
+            if (snap.exists()) {
+                currentUser = { uid: firebaseUser.uid, email: firebaseUser.email, ...snap.data() };
+                localStorage.setItem('user', JSON.stringify(currentUser));
+            } else {
+                window.location.href = 'index.html';
+                return;
+            }
+        } catch (err) {
+            console.error('Error restoring user:', err);
+            window.location.href = 'index.html';
+            return;
+        }
+    }
+
     displayUserInfo();
-
-    // Setup event listeners
     setupEventListeners();
-
-    // Load all transactions (This will trigger reports and chart)
     await loadTransactions();
-
-    // Populate year filter
     populateYearFilter();
-
-    // Initial animations
     animateElements();
 });
 

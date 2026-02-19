@@ -1,4 +1,5 @@
 import { db, auth } from './firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import {
     formatRupiah,
     formatDate,
@@ -14,6 +15,7 @@ import {
     parseRupiah,
     debounce
 } from './utils.js';
+
 
 import {
     collection,
@@ -522,17 +524,41 @@ function toggleMobileMenu() {
 }
 
 // --- INIT ---
-async function init() {
-    if (!currentUser) {
+// Tunggu Firebase restore session dulu (async) sebelum redirect
+onAuthStateChanged(auth, async (firebaseUser) => {
+    if (!firebaseUser) {
+        // Tidak ada session aktif → ke halaman login
         window.location.href = 'index.html';
         return;
     }
+
+    // Ambil data user dari localStorage dulu (cepat)
+    let user = getCurrentUser();
+
+    // Kalau localStorage kosong (misal baru install), ambil dari Firestore
+    if (!user) {
+        try {
+            const { doc: fsDoc, getDoc: fsGetDoc } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+            const userRef = fsDoc(db, 'users', firebaseUser.uid);
+            const snap = await fsGetDoc(userRef);
+            if (snap.exists()) {
+                user = { uid: firebaseUser.uid, email: firebaseUser.email, ...snap.data() };
+                localStorage.setItem('user', JSON.stringify(user));
+            } else {
+                window.location.href = 'index.html';
+                return;
+            }
+        } catch (err) {
+            console.error('Failed to restore user data', err);
+            window.location.href = 'index.html';
+            return;
+        }
+    }
+
+    currentUser = user;
     displayUserInfo();
     const btnBox = document.getElementById('actionButtons');
     if (btnBox && isPengurus()) btnBox.style.display = 'flex';
-
     setupEventListeners();
     loadTransactions();
-}
-
-init().catch(e => console.error(e));
+});
