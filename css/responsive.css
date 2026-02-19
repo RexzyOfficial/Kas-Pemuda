@@ -1,0 +1,710 @@
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablet (max-width: 1024px) */
+@media screen and (max-width: 1024px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .page-title {
+        font-size: 22px;
+    }
+
+    .summary-card {
+        padding: 16px;
+    }
+
+    .card-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .card-value {
+        font-size: 18px;
+    }
+
+    /* Table responsive */
+    .table th,
+    .table td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    /* Chart container */
+    .chart-card {
+        height: auto;
+        min-height: 300px;
+    }
+}
+
+/* Mobile Landscape (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    .nav-brand {
+        gap: 8px;
+        font-size: 18px;
+    }
+
+    .nav-logo-img {
+        height: 28px;
+    }
+
+    /* Navigation */
+    .navbar {
+        height: 60px;
+        position: sticky;
+        top: 0;
+        z-index: 2500;
+    }
+
+    .nav-container {
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .menu-toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 28px;
+        height: 18px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 2600;
+        /* Highest priority */
+        position: relative;
+    }
+
+    .menu-toggle span {
+        width: 100%;
+        height: 3px;
+        background: var(--text);
+        border-radius: 10px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
+        /* Changed to center for better rotation */
+    }
+
+    /* Perfect X Animation */
+    .menu-toggle.active span:nth-child(1) {
+        transform: translateY(7.5px) rotate(45deg);
+        background: var(--primary);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+        transform: translateY(-7.5px) rotate(-45deg);
+        background: var(--primary);
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        padding: 90px 24px 40px;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        z-index: 2550;
+        /* Above navbar content */
+        transform: translateX(100%);
+        visibility: hidden;
+    }
+
+    .nav-menu.show {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .menu-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        /* Solid overlay, no blur to avoid visual bugs */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+        z-index: 2400;
+        /* Below nav components */
+    }
+
+    .menu-backdrop.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-link {
+        font-size: 16px;
+        padding: 15px 20px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        background: transparent;
+        transition: all 0.2s ease;
+    }
+
+    .nav-link.active {
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--primary);
+    }
+
+    .nav-user {
+        margin-top: auto;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        width: 100%;
+    }
+
+    .user-info {
+        background: var(--background);
+        padding: 16px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+    }
+
+    .btn-logout {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        justify-content: center;
+        background: #fef2f2;
+        color: var(--danger);
+    }
+
+    /* Main content adjustment */
+    .main-content {
+        padding: 24px 0;
+    }
+
+    .page-header {
+        margin-bottom: 24px;
+        text-align: left;
+    }
+
+    /* Cards */
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .summary-card {
+        padding: 15px;
+    }
+
+    .card-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .card-label {
+        font-size: 13px;
+    }
+
+    .card-value {
+        font-size: 18px;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .action-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Chart */
+    .chart-card {
+        height: 300px;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        padding: 15px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-header h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    /* Search box */
+    .search-box {
+        width: 100%;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 10px 12px 10px 40px;
+        font-size: 14px;
+    }
+
+    /* Table */
+    .table-responsive {
+        margin: 0 -15px;
+        width: calc(100% + 30px);
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px 15px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .table td:first-child,
+    .table th:first-child {
+        padding-left: 15px;
+    }
+
+    .table td:last-child,
+    .table th:last-child {
+        padding-right: 15px;
+    }
+
+    /* Badge and Button sizes */
+    .badge {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* Modal - Mobile Optimization */
+    .modal-content {
+        width: 90%;
+        max-width: 400px;
+        height: auto;
+        max-height: 85vh;
+        border-radius: 16px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px 20px;
+    }
+
+    .modal-header,
+    .modal-footer {
+        padding: 16px 20px;
+        flex-shrink: 0;
+    }
+
+    .modal-lg .detail-summary {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        padding: 4px 0;
+    }
+
+    .summary-label {
+        font-size: 12px;
+        margin-bottom: 0;
+    }
+
+    .summary-value {
+        font-size: 14px;
+    }
+
+    /* Forms on Mobile */
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-input {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    /* Prevent iOS zoom */
+
+    /* Layout */
+    .filter-card {
+        padding: 12px;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    /* Toast */
+    .toast-container {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+    }
+
+    .toast {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .toast-message {
+        font-size: 13px;
+    }
+}
+
+/* Mobile Portrait (max-width: 480px) */
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 0 12px;
+    }
+
+    .page-title {
+        font-size: 20px;
+    }
+
+    .page-title i {
+        font-size: 20px;
+    }
+
+    .summary-card {
+        padding: 12px;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .card-value {
+        font-size: 16px;
+    }
+
+    .chart-card {
+        height: 250px;
+    }
+
+    .card-header h3 {
+        font-size: 15px;
+    }
+
+    .card-header h3 i {
+        font-size: 16px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .badge {
+        padding: 2px 6px;
+        font-size: 10px;
+    }
+
+    .badge i {
+        font-size: 10px;
+        margin-right: 2px;
+    }
+
+    .btn-sm {
+        padding: 5px 6px;
+        font-size: 11px;
+    }
+
+    .btn-sm i {
+        font-size: 11px;
+    }
+
+    /* Login page */
+    .login-container {
+        padding: 15px;
+    }
+
+    .login-card {
+        padding: 25px 20px;
+    }
+
+    .logo-wrapper {
+        width: 60px;
+        height: 60px;
+    }
+
+    .logo-icon {
+        font-size: 30px;
+    }
+
+    .app-title {
+        font-size: 20px;
+    }
+
+    .app-subtitle {
+        font-size: 12px;
+    }
+
+    .login-footer {
+        font-size: 12px;
+        padding-top: 15px;
+        margin-top: 15px;
+    }
+
+    /* Modal */
+    .modal-header {
+        padding: 12px 15px;
+    }
+
+    .modal-header h3 {
+        font-size: 16px;
+    }
+
+    .modal-close {
+        font-size: 18px;
+    }
+
+    .modal-body {
+        padding: 12px;
+    }
+
+    .modal-footer {
+        padding: 12px 15px;
+    }
+
+    .modal-footer .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+
+    /* Form */
+    .form-label {
+        font-size: 13px;
+    }
+
+    .form-label i {
+        font-size: 13px;
+        margin-right: 5px;
+    }
+
+    .form-input {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    .password-toggle {
+        bottom: 8px;
+        right: 10px;
+    }
+
+    /* Detail modal */
+    .modal-lg {
+        width: 98%;
+    }
+
+    .detail-summary {
+        padding: 12px;
+    }
+
+    .summary-label {
+        font-size: 12px;
+    }
+
+    .summary-value {
+        font-size: 14px;
+    }
+
+    /* Animations for mobile */
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Small Mobile (max-width: 360px) */
+@media screen and (max-width: 360px) {
+    .page-title {
+        font-size: 18px;
+    }
+
+    .card-value {
+        font-size: 14px;
+    }
+
+    .table th,
+    .table td {
+        padding: 6px;
+        font-size: 11px;
+    }
+
+    .badge {
+        padding: 2px 4px;
+        font-size: 9px;
+    }
+
+    .btn-sm {
+        padding: 4px 5px;
+    }
+
+    .login-card {
+        padding: 20px 15px;
+    }
+
+    .app-title {
+        font-size: 18px;
+    }
+}
+
+/* Tablet Landscape (min-width: 769px) and (max-width: 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+    .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .month-card {
+        padding: 18px;
+    }
+
+    .month-actions {
+        flex-direction: row;
+    }
+}
+
+/* Print styles */
+@media print {
+
+    .navbar,
+    .action-buttons,
+    .btn,
+    .modal-close,
+    .toast-container,
+    .filter-card,
+    .search-box,
+    .table-controls {
+        display: none !important;
+    }
+
+    .main-content {
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #ddd;
+    }
+}
+
+/* High-resolution screens */
+@media screen and (min-width: 1440px) {
+    .container {
+        max-width: 1400px;
+    }
+
+    .cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .page-title {
+        font-size: 32px;
+    }
+
+    .card-value {
+        font-size: 28px;
+    }
+}
+
+/* Dark mode support (opsional) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #1a1a1a;
+        --card-bg: #2d2d2d;
+        --text: #e5e5e5;
+        --text-light: #a0a0a0;
+        --border: #404040;
+    }
+
+    .card,
+    .navbar,
+    .modal-content {
+        background: var(--card-bg);
+    }
+
+    .form-input,
+    .filter-select {
+        background: var(--background);
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    .form-input:focus {
+        background: var(--background);
+    }
+
+    .table tbody tr:hover {
+        background: var(--background);
+    }
+
+    .badge-success {
+        background: rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-danger {
+        background: rgba(239, 68, 68, 0.2);
+    }
+}

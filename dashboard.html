@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Dashboard - Kas Pemuda Remaja</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        .card,
+        .summary-card,
+        .modal-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .modal.show {
+            display: flex !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="assets/images/logo.webp" alt="Logo" class="nav-logo-img"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <i class="fas fa-church" style="display: none;"></i>
+                <span>Kas Pemuda</span>
+            </div>
+
+            <button class="menu-toggle" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="nav-menu" id="navMenu">
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </a>
+                <a href="history.html" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+
+                <div class="nav-user">
+                    <div class="user-info" id="userInfo">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userName">Loading...</span>
+                        <span class="user-badge" id="userRole">Anggota</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline" id="settingsBtn" title="Pengaturan">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="btn btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="hide-mobile">Keluar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Overlay Backdrop -->
+    <div class="menu-backdrop" id="menuBackdrop"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header" style="position: relative; z-index: 1000;">
+                <h1 class="page-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </h1>
+                <p class="page-subtitle">Ringkasan keuangan kas pemuda remaja</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="cards-grid" id="summaryCards">
+                <div class="card summary-card">
+                    <div class="card-icon bg-primary">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Total Saldo</span>
+                        <span class="card-value" id="totalSaldo">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="card summary-card">
+                    <div class="card-icon bg-success">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Pemasukan Bulan Ini</span>
+                        <span class="card-value" id="totalPemasukan">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="card summary-card">
+                    <div class="card-icon bg-danger">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Pengeluaran Bulan Ini</span>
+                        <span class="card-value" id="totalPengeluaran">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="card summary-card">
+                    <div class="card-icon bg-warning">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Saldo Akhir Bulan</span>
+                        <span class="card-value" id="saldoAkhir">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons (for Pengurus) -->
+            <div class="action-buttons" id="actionButtons" style="display: none;">
+                <button class="btn btn-primary" onclick="openModal('pemasukan')">
+                    <i class="fas fa-plus-circle"></i>
+                    Tambah Pemasukan
+                </button>
+                <button class="btn btn-danger" onclick="openModal('pengeluaran')">
+                    <i class="fas fa-minus-circle"></i>
+                    Tambah Pengeluaran
+                </button>
+                <a href="history.html" class="btn btn-secondary">
+                    <i class="fas fa-list"></i>
+                    Lihat History
+                </a>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-chart-bar"></i>
+                        Grafik Kas 7 Hari Terakhir
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="kasChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-exchange-alt"></i>
+                        Transaksi Terbaru
+                    </h2>
+                    <div class="table-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Cari keterangan...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="advanced-filters">
+                        <div class="filter-badge active" data-filter="all">Semua</div>
+                        <div class="filter-badge" data-filter="pemasukan">Pemasukan</div>
+                        <div class="filter-badge" data-filter="pengeluaran">Pengeluaran</div>
+
+                        <select id="sortSelect" class="sort-select">
+                            <option value="latest">Terbaru</option>
+                            <option value="oldest">Terlama</option>
+                            <option value="highest">Nominal Terbesar</option>
+                            <option value="lowest">Nominal Terkecil</option>
+                        </select>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table" id="transactionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Keterangan</th>
+                                    <th>Jumlah Anggota</th>
+                                    <th>Nominal</th>
+                                    <th>Tipe</th>
+                                    <th>Petugas</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <div class="loading-spinner">
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                            Memuat data...
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Tambah/Edit Transaksi -->
+    <div class="modal" id="transactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Pemasukan</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="transactionForm">
+                <div class="modal-body">
+                    <input type="hidden" id="transactionId">
+                    <input type="hidden" id="transactionType">
+
+                    <div class="form-group" id="ketGroup">
+                        <label for="keterangan" class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            Keterangan
+                        </label>
+                        <input type="text" class="form-input" id="keterangan" placeholder="Contoh: Iuran Bulanan"
+                            required>
+                    </div>
+
+                    <div class="form-group" id="jumlahOrangGroup">
+                        <label for="jumlahOrang" class="form-label">
+                            <i class="fas fa-users"></i>
+                            Jumlah Anggota
+                        </label>
+                        <input type="number" class="form-input" id="jumlahOrang" placeholder="0" min="1">
+                    </div>
+
+                    <div class="form-group" id="tanggalGroup">
+                        <label for="tanggal" class="form-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Tanggal Transaksi (Pilih di Kalender)
+                        </label>
+                        <input type="date" id="tanggal" class="form-input" required>
+                    </div>
+
+                    <div class="form-group" id="nominalGroup">
+                        <label for="nominal" class="form-label">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Nominal (Rp)
+                        </label>
+                        <input type="text" class="form-input" id="nominal" placeholder="0" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                        <span class="btn-text">Simpan</span>
+                        <span class="loading-spinner" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Profil & Pengaturan -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Pengaturan Profil</h3>
+                <button class="modal-close" onclick="closeProfileModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="profileForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            Nama Lengkap
+                        </label>
+                        <input type="text" id="profileNama" class="form-input" required>
+                    </div>
+                    <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);">
+                    <h4 style="margin-bottom: 15px;">Ganti Password</h4>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock"></i>
+                            Password Baru
+                        </label>
+                        <input type="password" id="newPassword" class="form-input" placeholder="Isi jika ingin ganti">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeProfileModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div class="confirm-modal-overlay" id="confirmModal">
+        <div class="confirm-modal">
+            <div class="confirm-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="confirm-title" id="confirmTitle">Konfirmasi</h3>
+            <p class="confirm-message" id="confirmMessage">Apakah Anda yakin ingin menghapus data ini?</p>
+            <div class="confirm-actions">
+                <button class="btn btn-secondary" id="confirmCancel">Batal</button>
+                <button class="btn btn-danger" id="confirmOk"
+                    style="background: var(--danger); color: white;">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Main Script -->
+    <script type="module" src="js/dashboard.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => {
+                        console.log('SW Registered');
+                        reg.onupdatefound = () => {
+                            const installingWorker = reg.installing;
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New SW available, force reload
+                                    window.location.reload();
+                                }
+                            };
+                        };
+                    })
+                    .catch(err => console.log('SW Error', err));
+            });
+        }
+    </script>
+</body>
+
+</html>
