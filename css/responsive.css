@@ -669,42 +669,397 @@
     }
 }
 
-/* Dark mode support (opsional) */
+/* ========== DARK MODE ========== */
 @media (prefers-color-scheme: dark) {
+
+    /* ── Token Warna ── */
     :root {
-        --background: #1a1a1a;
-        --card-bg: #2d2d2d;
-        --text: #e5e5e5;
-        --text-light: #a0a0a0;
-        --border: #404040;
+        --background: #0f1117;
+        --card-bg: #1c1f2b;
+        --text: #e2e8f0;
+        --text-light: #8892a4;
+        --border: #2d3348;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
     }
 
-    .card,
-    .navbar,
-    .modal-content {
+    /* ── Body & Global ── */
+    body {
+        background-color: var(--background);
+        color: var(--text);
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+        background: #161923;
+        box-shadow: 0 1px 0 var(--border);
+    }
+
+    .nav-brand {
+        color: #60a5fa;
+    }
+
+    .nav-link {
+        color: var(--text-light);
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        background: rgba(96, 165, 250, 0.1);
+        color: #60a5fa;
+    }
+
+    .nav-user {
+        border-color: var(--border);
+    }
+
+    .menu-toggle span {
+        background: var(--text);
+    }
+
+    .menu-toggle.active span:nth-child(1),
+    .menu-toggle.active span:nth-child(3) {
+        background: #60a5fa;
+    }
+
+    .nav-menu {
+        background: #161923;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .menu-backdrop {
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    /* ── Cards ── */
+    .card {
+        background: var(--card-bg);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+    }
+
+    .card:hover {
+        box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+        border-color: var(--border);
+    }
+
+    .card-label {
+        color: var(--text-light);
+    }
+
+    .card-value {
+        color: var(--text);
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+        background: #2563eb;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-secondary {
+        background: #374151;
+        color: #d1d5db;
+    }
+
+    .btn-secondary:hover {
+        background: #4b5563;
+    }
+
+    .btn-logout {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+    }
+
+    .btn-logout:hover {
+        background: rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-outline {
+        border-color: var(--border);
+        color: var(--text);
+        background: transparent;
+    }
+
+    .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* ── Table ── */
+    .table th {
+        background: #12151f;
+        color: var(--text-light);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .table td {
+        border-color: var(--border);
+        color: var(--text);
+    }
+
+    .table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* ── Badges ── */
+    .badge-success {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+    }
+
+    .badge-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+    }
+
+    /* ── Search Box ── */
+    .search-box input {
+        background: var(--background);
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    .search-box input::placeholder {
+        color: var(--text-light);
+    }
+
+    .search-box i {
+        color: var(--text-light);
+    }
+
+    /* ── Filter ── */
+    .filter-card {
         background: var(--card-bg);
     }
 
-    .form-input,
     .filter-select {
         background: var(--background);
         color: var(--text);
         border-color: var(--border);
     }
 
+    .filter-label {
+        color: var(--text);
+    }
+
+    .filter-badge {
+        background: var(--background);
+        color: var(--text-light);
+        border-color: var(--border);
+    }
+
+    .filter-badge.active {
+        background: rgba(37, 99, 235, 0.2);
+        color: #60a5fa;
+    }
+
+    /* ── Forms ── */
+    .form-input {
+        background: #12151f;
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    .form-input::placeholder {
+        color: var(--text-light);
+    }
+
     .form-input:focus {
+        background: #12151f;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .form-label {
+        color: var(--text);
+    }
+
+    .form-label i {
+        color: #60a5fa;
+    }
+
+    /* ── Modal ── */
+    .modal {
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal-content {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+    }
+
+    .modal-header {
+        border-color: var(--border);
+    }
+
+    .modal-header h3 {
+        color: var(--text);
+    }
+
+    .modal-footer {
+        border-color: var(--border);
+    }
+
+    .modal-close {
+        color: var(--text-light);
+    }
+
+    .modal-close:hover {
+        color: #f87171;
+    }
+
+    /* ── Detail Summary in Modal ── */
+    .detail-summary {
+        background: #12151f;
+        border: 1px solid var(--border);
+    }
+
+    .summary-label {
+        color: var(--text-light);
+    }
+
+    .summary-value {
+        color: var(--text);
+    }
+
+    /* ── Confirm Modal ── */
+    .confirm-modal-overlay {
+        background: rgba(0, 0, 0, 0.75);
+    }
+
+    .confirm-modal {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+    }
+
+    .confirm-title,
+    .confirm-message {
+        color: var(--text);
+    }
+
+    /* ── Toast ── */
+    .toast {
+        background: #1c1f2b;
+        border-color: var(--border);
+        color: var(--text);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .toast-message {
+        color: var(--text);
+    }
+
+    /* ── sort select ── */
+    .sort-select {
+        background: var(--background);
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    /* ── Advanced Filters ── */
+    .advanced-filters {
+        border-color: var(--border);
+    }
+
+    /* ── Login Page ── */
+    .login-page {
+        background: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+    }
+
+    .login-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+    }
+
+    .login-header .app-title {
+        color: var(--text);
+    }
+
+    .login-header .app-subtitle {
+        color: var(--text-light);
+    }
+
+    .login-footer {
+        color: var(--text-light);
+    }
+
+    .alert-error {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    /* ── Page header & subtitle ── */
+    .page-title {
+        color: var(--text);
+    }
+
+    .page-subtitle {
+        color: var(--text-light);
+    }
+
+    /* ── User Badge ── */
+    .user-badge {
+        background: #1d4ed8;
+    }
+
+    /* ── Month Cards (history) ── */
+    .month-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+    }
+
+    .month-name {
+        color: var(--text);
+    }
+
+    .month-actions .btn {
+        background: transparent;
+    }
+
+    /* ── Export menu (floating) ── */
+    #exportMenu {
+        background: #1c1f2b !important;
+        border-color: var(--border) !important;
+        color: var(--text) !important;
+    }
+
+    #exportMenu p {
+        color: var(--text-light) !important;
+    }
+
+    #exportMenu button {
+        background: transparent !important;
+        color: var(--text) !important;
+        border-color: var(--border) !important;
+    }
+
+    #exportMenu button:hover {
+        background: rgba(255, 255, 255, 0.06) !important;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
         background: var(--background);
     }
 
-    .table tbody tr:hover {
-        background: var(--background);
+    ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
     }
 
-    .badge-success {
-        background: rgba(16, 185, 129, 0.2);
-    }
-
-    .badge-danger {
-        background: rgba(239, 68, 68, 0.2);
+    ::-webkit-scrollbar-thumb:hover {
+        background: #4b5563;
     }
 }
